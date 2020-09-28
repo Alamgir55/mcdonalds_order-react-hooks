@@ -1,4 +1,4 @@
-import React, { Component, lazy, Suspense } from 'react';
+import React, {lazy, Suspense, useEffect } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -8,32 +8,32 @@ import Logout from './containers/Auth/Logout/Logout';
 import * as actions from './store/actions/index';
 
 
-const asyncCheckout = lazy(() => import('./containers/Checkout/Checkout'));
-const asyncOrders = lazy(() => import('./containers/Orders/Orders'));
-const asyncAuth = lazy(() => import('./containers/Auth/Auth'));
+const Checkout = lazy(() => import('./containers/Checkout/Checkout'));
+const Orders = lazy(() => import('./containers/Orders/Orders'));
+const Auth = lazy(() => import('./containers/Auth/Auth'));
 
-class App extends Component {
-  componentDidMount(){
-    this.props.onTryAutoSignup();
-  }
-  render(){
+const App = props => {
+  useEffect(() => {
+    props.onTryAutoSignup();
+  }, [])
+
     let routes = (
       <Switch>
         <Suspense fallback={<div>Loading...</div>}>
-          <Route path="/auth" exact component={asyncAuth} />
+          <Route path="/auth" exact render={(props) =>  <Auth {...props} />} />
           <Route path="/" exact component={BurgerBuilder} />
           <Redirect to="/" />
         </Suspense>
       </Switch>       
     );
 
-    if(this.props.isAuthenticated){
+    if(props.isAuthenticated){
       routes = (
         <Switch>
           <Suspense fallback={<div>Loading...</div>}>
-            <Route path="/checkout" component={asyncCheckout} />
-            <Route path="/orders" component={asyncOrders} />
-            <Route path="/auth" exact component={asyncAuth} />
+            <Route path="/checkout" render={(props) => <Checkout {...props} />} />
+            <Route path="/orders" render={(props) => <Orders {...props} />} />
+            <Route path="/auth" exact render={(props) =>  <Auth {...props} />} />
             <Route path="/logout" exact component={Logout} />
             <Route path="/" exact component={BurgerBuilder} />
             <Redirect to="/" />
@@ -49,7 +49,7 @@ class App extends Component {
        </Layout>
       </div>
     );
-  }
+  
 }
 
 const mapStateToProps = state => {
