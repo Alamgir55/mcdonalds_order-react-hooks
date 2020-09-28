@@ -3,13 +3,12 @@
     padding: 10px;
     box-sizing: border-box;
 }
-
 .Label {
     font-weight: bold;
     display: block;
     margin-bottom: 8px;
+    
 }
-
 .InputElement {
     outline: none;
     border: 1px solid #ccc;
@@ -28,5 +27,5 @@
 
 .Invalid {
     border: 1px solid red;
-    background-color: #FDA49A;
+    background-color: salmon;
 }
